@@ -1,5 +1,5 @@
 function redHome(){
-    window.location.href = "file:///C:/Users/walia/OneDrive/Desktop/LawSite%20final/Home.html";
+    window.location.href = "Home.html";
 }
 
 
