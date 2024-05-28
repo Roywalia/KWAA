@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        select:focus {
+    outline: none;
+}
+        .prod-main{
+    margin-left:11px;
+    padding-right: 393px;
+}
+.prod-box {
+    background-color: white;
+    border: 1.5px solid #cecece;
+    height: 32px;
+    width: 198px;
+    border-radius: 3px;
+}
+.top{
+    flex-direction: row; 
+    display: flex; 
+    align-items: center;
+}
+.top .arrow{
+    position: absolute;
+    margin-left: 177px;
+}
+.open .options{
+    display: block;
+}
+.options{
+    display: none;
+    z-index: 100;
+}
+.options select{
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.search{
+    background-color: white;
+    border: 1.5px solid #cecece;
+    height: 24px;
+    width: 186px;
+    margin-left: 4px;
+    margin-right: 17px;
+    margin-top: 4px;
+}
+
+.search-area{
+    flex-direction: row; 
+    display: flex; 
+    align-items: center;
+}
+.search-area .clear{
+    position: absolute;
+    margin-left: 178px;
+    font-size: 13px;
+    margin-top: 4px;
+}
+.search-main{
+    border: 1px solid black;
+    border-radius: 3px;
+}
+.search-main select{
+    border: none;
+}
+.search-main .option{
+    padding-right: 128px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.search-main .all-tags{
+    padding-right: 128px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-left: 7px;
+    margin-top: 5px;
+}
+.search-main .all-tags:hover{
+    background-color: #cecece;
+}
+.search-main .option:hover{
+    background-color: #cecece;
+}
+.search-main select.clicked{
+    border: none;
+}
+.selected{
+    flex-direction: row; 
+    display: flex; 
+    align-items: center;
+    position: absolute;
+}
+.selected .item{
+    margin-right: -2px;
+    border: 1px solid #cecece;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    margin-left: 6px;
+    background-color: #cecece;
+    padding: 1px;
+}
+    </style>
+</head>
+<body>
+
+    <div class="chk1 prod-main">
+        <div class="open custom-select">
+            <div class="top">
+                <input type="text" class="inputs" hidden>
+                <div class="prod-box"></div>
+                <span class="arrow">></span>
+                <div class="selected">
+                    <!-- <span class="item">prods1<span>&times;</span></span>
+                    <span class="item">prods2<span>&times;</span></span>
+                    <span class="item">+1<span>&times;</span></span> -->
+                </div>
+            </div>
+            <div class="options">
+                <div class="search-main">
+                    <div class="search-area">
+                        <input type="text" class="search" placeholder="search options"></input>
+                        <span class="clear">X</span>
+                    </div>
+                    <div value="all" class="all-tags">Select All</div>
+                    <select title="prod" id="prod" multiple required>
+                        
+                        <option class="option" value="1">prods1</option>
+                        <option class="option" value="2">prods2</option>
+                        <option class="option" value="3">prods3</option>
+                        <option class="option" value="3">prods3</option>
+                        <option class="option" value="3">prods3</option>
+                        <option class="option" value="3">prods3</option>
+                        
+                    </select>
+                    <div class="no-result" style="display: none;">No Result</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const customSelect = document.querySelector(".custom-select");
+
+    function updateSelectedOptions(customSelect) {
+        const SelectedOptions = Array.from(customSelect.querySelectorAll(".options .option.active")).map(function (option) {
+            return {
+                value: option.value,
+                text: option.textContent.trim()
+            };
+        });
+
+        const selectedValues = SelectedOptions.map(function (option) {
+            return option.value;
+        });
+
+        customSelect.querySelector(".inputs").value = selectedValues.join(', ');
+
+        let tagsHTML = "";
+
+        if (SelectedOptions.length === 0) {
+            tagsHTML = '<span class="placeholder">Select the tags</span>';
+
+        } else {
+            const maxTags = 2;
+            let moreCount = 0;
+
+            SelectedOptions.forEach(function (option, index) {
+                if (index < maxTags) {
+                    tagsHTML += '<span class="item">' + option.text + '<span class="remove-tag" value="' + option.value + '">&times;</span></span>';
+                } else {
+                    moreCount++;
+                }
+            });
+
+            if (moreCount > 0) {
+                tagsHTML += '<span class="item">+' + moreCount + '</span>';
+            }
+        }
+        customSelect.querySelector(".prod-box").innerHTML = tagsHTML;
+    }
+
+    customSelect.addEventListener("click", function () {
+        const searchInput = customSelect.querySelector(".search");
+
+        const optionsContainer = customSelect.querySelector(".options");
+
+        const noResult = customSelect.querySelector(".no-result");
+
+        const options = customSelect.querySelectorAll(".option");
+
+        const allTags = customSelect.querySelector(".all-tags");
+
+        const clearBtn = customSelect.querySelector(".clear");
+
+        allTags.addEventListener("click", function () {
+            const isActive = allTags.classList.contains("active");
+
+            options.forEach(function (option) {
+                if (option !== allTags) {
+                    option.classList.toggle("active", !isActive);
+                }
+            });
+
+            updateSelectedOptions(customSelect);
+        });
+
+        clearBtn.addEventListener("click", function () {
+            searchInput.value = "";
+
+            options.forEach(function (option) {
+                option.style.display = "block";
+            });
+            noResult.style.display = "none";
+        });
+
+        searchInput.addEventListener("input", function () {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            options.forEach(function (option) {
+                const optionText = option.textContent.trim().toLocaleLowerCase();
+                const shouldShow = optionText.includes(searchTerm);
+
+                option.style.display = shouldShow ? "block" : "none";
+            });
+
+            const anyOptionsMatch = Array.from(options).some(option => option.style.display === "block");
+
+            noResult.style.display = anyOptionsMatch ? "none" : "block";
+
+            if (searchTerm) {
+                optionsContainer.classList.add("option-search-active");
+
+            } else {
+                optionsContainer.classList.remove("option-search-active");
+            }
+        });
+
+    });
+
+    customSelect.addEventListener("click", function () {
+        const options = customSelect.querySelectorAll(".option");
+        options.forEach(function (option) {
+            option.addEventListener("click", function () {
+                option.classList.toggle("active");
+                updateSelectedOptions(customSelect);
+            });
+        });
+    });
+
+    document.addEventListener("click", function (event) {
+        const removeTag = event.target.closest(".remove-tag");
+        if (removeTag) {
+            const customSelect = removeTag.closest(".custom-select");
+
+            const valueToRemove = removeTag.getAttribute("value");
+
+            const optionToRemove = customSelect.querySelector(".option[value='" + valueToRemove + "']");
+
+            optionToRemove.classList.remove("active");
+
+            const otherSelectedOptions = customSelect.querySelectorAll(".option.active:not(.all-tags)");
+
+            const allTagsOption = customSelect.querySelector(".option.all-tags");
+
+            if (otherSelectedOptions.length === 0) {
+                allTagsOption.classList.remove("active");
+            }
+            updateSelectedOptions(customSelect);
+        }
+    });
+
+    const selectBoxes = document.querySelectorAll(".select-box");
+    selectBoxes.forEach(function (selectBox) {
+        selectBox.addEventListener("click", function (event) {
+            if (!event.target.closest(".tag")) {
+                selectBox.parentNode.classList.toggle("open");
+            }
+        });
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".custom-select") && !event.target.classList.contains("remove-tag")) {
+            customSelect.classList.remove("open");
+        }
+    });
+    function resetCustomSelect() {
+        customSelect.querySelectorAll(".options .option.active").forEach(function (option) {
+            option.classList.remove("active");
+        });
+        customSelect.querySelector(".option.all-tags").classList.remove("active");
+        updateSelectedOptions(customSelect);
+    }
+    updateSelectedOptions(customSelect);
+
+    const arrow = customSelect.querySelector(".arrow");
+    arrow.addEventListener("click", function () {
+        customSelect.classList.toggle("open");
+    });
+});
+
+    </script>
+</body>
+</html>
