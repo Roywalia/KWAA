@@ -7,7 +7,7 @@ checkk.addEventListener("click", () => {
 
 function gate() {
     if (checkk.value === "Agreed") {
-        window.location.href = "Home.html";
+        window.location.href = "./Home.html";
         // function noBack() { 
         //     window.history.forward();
         //     } 
