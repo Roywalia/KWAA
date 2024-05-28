@@ -7,7 +7,7 @@ checkk.addEventListener("click", () => {
 
 function gate() {
     if (checkk.value === "Agreed") {
-        window.location.href = "file:///C:/Users/walia/OneDrive/Desktop/LawSite%20final/Home.html";
+        window.location.href = "Home.html";
         // function noBack() { 
         //     window.history.forward();
         //     } 
